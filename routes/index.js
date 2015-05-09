@@ -10,11 +10,16 @@ router.get('/', function(req, res) {
     });
 });
 
+/* Página de creditos */
 router.get('/author', function(req, res) {
   res.render('author', {
     name: 'Gonzalo Forcada Ayala y Pablo Arcones Castrillo',
     picture: '<img src="/images/imagen.jpg" width="150px" title="Gonzalo Forcada Ayala y Pablo Arcones Castrillo">'});
 });
+
+// Autoload de comandos con :quizId
+router.param('quizId', quizController.load);
+
 
 /* Definición de rutas de /quizes */
 router.get('/quizes',                      quizController.index);
