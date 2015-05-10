@@ -31,8 +31,10 @@ exports.index = function(req, res, next) {
 
 /* GET /quizes/:id */
 exports.show = function(req, res) {
+  var quiz = req.quiz;
+  // req.quiz: instancia de quiz cargada con autoload
   res.render('quizes/show', {
-        quiz: req.quiz,
+        quiz: quiz,
         errors: []
   });
 };
@@ -44,8 +46,9 @@ exports.answer = function(req, res) {
   {
       resultado = 'Correcto';
   }
+  var quiz = req.quiz;
   res.render('quizes/answer', {
-      quiz     : req.quiz,
+      quiz     : quiz,
       respuesta: resultado,
       errors: []
   });
@@ -85,5 +88,40 @@ exports.create = function(req, res) {
                   res.redirect('/quizes');
               });
           }
+    });
+};
+
+/* GET /quizes/:id/edit */
+exports.edit = function(req, res) {
+    var quiz = req.quiz;
+    res.render('quizes/edit', {
+        quiz: quiz,
+        errors: []
+    });
+};
+
+/* PUT /quizes/:id */
+exports.update = function(req, res) {
+    req.quiz.pregunta  = req.body.quiz.pregunta;
+    req.quiz.respuesta = req.body.quiz.respuesta;
+    req.quiz.validate().then(function(err) {
+        if (err)
+        {
+            var quiz = req.quiz;
+            res.render('quizes/edit', {
+                quiz  : quiz,
+                errors: err.errors
+            });
+        }
+        else
+        {
+            // guarda en DB los campos "pregunta" y "respuesta" de req.quiz
+            req.quiz.save( {
+                fields: ["pregunta", "respuesta"]
+            }).then( function() {
+                // redirección HTTP a lista de preguntas
+                res.redirect('/quizes');
+            });
+        }
     });
 };
