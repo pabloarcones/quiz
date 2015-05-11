@@ -15,7 +15,8 @@ router.get('/', function(req, res) {
 router.get('/author', function(req, res) {
   res.render('author', {
     author: 'Gonzalo Forcada Ayala y Pablo Arcones Castrillo',
-    picture: '<img src="/images/imagen.jpg" width="150px" title="Gonzalo Forcada Ayala y Pablo Arcones Castrillo">'});
+    picture: '<img src="/images/imagen.jpg" width="150px" title="Gonzalo Forcada Ayala y Pablo Arcones Castrillo">',
+    errors: []});
 });
 
 // Autoload de comandos con :quizId
