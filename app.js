@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
 var methodOverride = require('method-override');
+var session        = require('express-session');
 
 var routes = require('./routes/index');                       // Importar enroutadores
 //var users = require('./routes/users');
@@ -21,9 +22,17 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());                                   // Instalar middlewares
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+app.use(cookieParser('Quiz 2015'));
+app.use(session());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// helpers dinamicos:
+app.use(function(req, res, next) {
+    // hacer visible req.session en las vistas
+    res.locals.session = req.session;
+    next();
+});
 
 app.use('/', routes);                                         // Instalar enroutadores
 //app.use('/users', users);                                     // Asociar rutas a sus gestores
