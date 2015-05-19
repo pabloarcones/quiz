@@ -1,6 +1,16 @@
 /*
 Middleware: Se requiere hacer login.
+*/
 
+exports.loginRequired = function(req, res, next) {
+    if (req.session.user)  {
+        next();
+    } else{
+        res.redirect('/login');
+    }
+};
+
+/*
 Formulario para hacer login
 
 Es la tipica ruta REST que devuelve un formulario para crear
