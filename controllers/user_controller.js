@@ -1,31 +1,29 @@
-var admin_users = {
+var users = {
     admin: {
         id      : 1,
-        username: "admin",
-        password: "1234"
+        username: "pablo",
+        password: "0000"
     },
     admin2: {
         id      : 2,
-        username: "admin2",
-        password: "5678"
+        username: "gonzalo",
+        password: "0000"
     }
 };
 
-/*
-Autenticar un usuario.
-
-Busca el usuario con el login dado en la base de datos y comprueba su password.
-Si todo es correcto ejecuta callback(null,user).
-Si la autenticación falla o hay errores se ejecuta callback(error).
-*/
+/* Autenticar un usuario. Busca el usuario con el login dado en la base de
+datos y comprueba su password. Si todo es correcto ejecuta callback (null,user).
+Si la autenticación falla o hay errores se ejecuta callback(error). */
+// Comprueba si el usuario esta registrado en users
+// Si autenticación falla o hay errores se ejecuta callback(error)
 exports.autenticar = function(login, password, callback) {
 
-    if(admin_users[login])
+    if(users[login])
     {
-        //login exists
-        if(password === admin_users[login].password)
+        //login existe
+        if(password === users[login].password)
         {
-            callback(null, admin_users[login]);
+            callback(null, users[login]);
         }
         else
         {

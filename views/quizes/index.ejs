@@ -32,8 +32,13 @@
       }
   %>
 </table>
-<p><a href="/quizes/new"><button type="button">Crear pregunta</button></a>
-
+  <%
+  if(session.user) {
+  %>
+    <p><a href="/quizes/new"><button type="button">Crear pregunta</button></a>
+  <%
+  }
+  %>
 <p>
     <form method="get" action="/quizes">
         <p>Buscador de preguntas</p>

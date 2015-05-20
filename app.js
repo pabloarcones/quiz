@@ -29,8 +29,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // helpers dinamicos:
 app.use(function(req, res, next) {
+  // guardar path en session.redir para despues de login
+    if (!req.path.match(/\/login|\/logout/)) {
+        req.session.redir = req.path;
+    }
     // hacer visible req.session en las vistas
     res.locals.session = req.session;
+    next();
+});
+
+// auto-logout de sesión
+app.use(function(req,res,next) {
+    console.log("MW auto-logout: 'Ejecutándose'");
+    if(req.session.user) {
+        var currentTime = new Date().getTime();
+        var diferencia  = currentTime - req.session.user.tiempo;
+        if(diferencia > 120000) {
+               console.log("MW auto-logout: 'Destruyendo al usuario'");
+               var sessionController = require('./controllers/session_controller').destroy(req,res);
+        }
+        else
+        {
+            req.session.user.tiempo = currentTime;
+        }
+    }
     next();
 });
 
