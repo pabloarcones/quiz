@@ -23,11 +23,11 @@
       <%
       if(!session.user){
       %>
-        <span class="right"><a href="/login">Login</a></span>
+        <span class="right"><a href="/user">Sign up</a> - <a href="/login">Login</a></span>
       <%
       }else{
       %>
-        <span class="right">Hola <%=session.user.username%>! - <a href="/logout">Logout</a></span>
+        <span class="right">Hola <%=session.user.username%>! - <a href="/user/<%=session.user.id%>/edit">Settings</a> - <a href="/logout">Logout</a></span>
       <%
       }
       %>
