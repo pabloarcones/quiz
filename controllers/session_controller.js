@@ -38,8 +38,7 @@ exports.create = function(req, res) {
     var userController = require('./user_controller');
     userController.autenticar(login, password, function(error, user) {
 
-        if (error)
-        {   // si hay error retornamos mensajes de error de sesión
+        if (error) {   // si hay error retornamos mensajes de error de sesión
             req.session.errors = [{
               "message": 'Se ha producido un error: ' + error
             }];
@@ -47,13 +46,14 @@ exports.create = function(req, res) {
             return;
         }
 
-        // IMPORTANTE: crear req.session.user. y guardar campos id y username
+        // Crear req.session.user. y guardar campos id y username
         // Solo guardo algunos campos del usuario en la sesion.
         // Esto es lo que uso para saber si he hecho login o no.
         // La sesión se define por la existencia de: req.session.user
         req.session.user = {
           id:user.id,
           username:user.username,
+          isAdmin:user.isAdmin,
           tiempo  :new Date().getTime()
         };
 

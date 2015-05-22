@@ -12,6 +12,7 @@
 
             <%
             if(session.user) {
+              if (session.user.isAdmin || session.user.id === quizes[i].UserId) {
               %>
                 <td>
                     <a href="quizes/<%= quizes[i].id %>/edit">
@@ -24,7 +25,8 @@
                         <button type="submit" onClick="return confirm('Borrar: <%= quizes[i].pregunta %>');">Borrar</button>
                     </form>
                 </td>
-            <%
+              <%
+              }
             }
             %>
         </tr>
