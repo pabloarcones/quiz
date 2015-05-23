@@ -34,10 +34,11 @@ var Quiz      = sequelize.import(quiz_path);
 var comment_path = path.join(__dirname,'comment');
 var Comment      = sequelize.import(comment_path);
 
-// Importar definicion de la tabla Comment
+// Importar definicion de la tabla User
 var user_path = path.join(__dirname,'user');
 var User = sequelize.import(user_path);
 
+// Los comments pertenecen a un quiz
 Comment.belongsTo(Quiz);
 Quiz.hasMany(Comment);
 
