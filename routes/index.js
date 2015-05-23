@@ -86,6 +86,8 @@ router.delete('/quizes/:quizId(\\d+)',
   sessionController.loginRequired,
   quizController.ownershipRequired,
   quizController.destroy);
+router.get('/user/:userId(\\d+)/quizes',    // ver las preguntas de un usuario
+  quizController.index);
 
 /* Definición de rutas de comentarios */
 router.get('/quizes/:quizId(\\d+)/comments/new',

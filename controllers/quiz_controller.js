@@ -39,11 +39,17 @@ exports.load = function(req, res, next, quizId) {
 };
 
 /* GET /quizes */
+/* GET /users/:userId/quizes */
 exports.index = function(req, res, next) {
+  var options = {};
+  if(req.user) {
+    options.where = {
+        UserId: req.user.id
+    }
+  }
   var cadena = "";
-    if (req.query.search === undefined)
-    {
-        models.Quiz.findAll().then(function(quizes) {
+    if (req.query.search === undefined) {
+        models.Quiz.findAll(options).then(function(quizes) {
             res.render('quizes/index', {
                 quizes: quizes,
                 errors: []
@@ -51,9 +57,8 @@ exports.index = function(req, res, next) {
         }).catch(function(error) {
             next(error);
         });
-      }
-    else
-    {
+    }
+    else {
         cadena = '%' + req.query.search + '%';
         cadena = cadena.replace(/\s/g, '%');
         models.Quiz.findAll( {
