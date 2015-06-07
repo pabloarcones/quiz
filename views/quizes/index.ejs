@@ -5,11 +5,8 @@
   %>
         <tr>
             <td>
-                <a href="/quizes/<%= quizes[i].id %>">
-                    <%= quizes[i].pregunta %>
-                </a>
+                <a href="/quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a>
             </td>
-
             <%
             if(session.user) {
               if (session.user.isAdmin || session.user.id === quizes[i].UserId) {
@@ -27,12 +24,21 @@
                 </td>
               <%
               }
-            }
-            %>
+              %>
+                <td>
+                  <% if(mark[i] === 'unchecked') { %>
+                    <form method="post" action="/user/<%= session.user.id %>/favourites/<%= quizes[i].id %>?_method=put">
+                      <input class="unchecked" type="submit" value="" />
+                    </form>
+                  <% } if(mark[i] === 'checked') { %>
+                    <form method="post" action="/user/<%= session.user.id %>/favourites/<%= quizes[i].id %>?_method=delete">
+                      <button class="checked" type="submit" onClick="return confirm('Eliminar: <%= quizes[i].pregunta %> de Favoritos');"></button>
+                    </form>
+                  <% } %>
+                </td>
+            <% } %>
         </tr>
-      <%
-      }
-  %>
+      <% } %>
 </table>
   <%
   if(session.user) {

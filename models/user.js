@@ -1,11 +1,10 @@
-// Definicion del modelo de User con validación y encriptación de passwords
+/* Definicion del modelo User con validación y encriptación de passwords */
 var crypto = require('crypto');
 var key = process.env.PASSWORD_ENCRYPTION_KEY;
 
 module.exports = function(sequelize, DataTypes) {
-    var User = sequelize.define(
-        'User',
-        {
+    var User = sequelize.define('User',
+    {
             username: {
                 type: DataTypes.STRING,
                 unique: true,
@@ -14,14 +13,14 @@ module.exports = function(sequelize, DataTypes) {
                     // hay que devolver un mensaje de error si el username ya existe
                     isUnique: function (value, next) {
                         var self = this;
-                        User.find({where: {username: value}})
-                        .then(function (user) {
+                        User.find({
+                          where: {username: value}
+                        }).then(function (user) {
                                 if (user && self.id !== user.id) {
                                     return next('Username ya utilizado');
                                 }
                                 return next();
-                        })
-                        .catch(function (err) {
+                        }).catch(function (err) {
                             return next(err);
                         });
                     }
@@ -39,6 +38,9 @@ module.exports = function(sequelize, DataTypes) {
                     this.setDataValue('password', encripted);
                 }
             },
+            image: {
+                type: DataTypes.STRING
+            },
             isAdmin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
@@ -55,4 +57,4 @@ module.exports = function(sequelize, DataTypes) {
     );
 
     return User;
-} 
+}

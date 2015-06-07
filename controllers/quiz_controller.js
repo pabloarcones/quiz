@@ -1,7 +1,8 @@
+/* Importar el modelo */
 var models = require('../models/models.js');
 
-// MW que permite acciones solamente si el quiz objeto
-// pertenece al usuario logeado o si es cuenta admin
+/* MW que permite acciones solamente si el quiz objeto
+pertenece al usuario logeado o si es cuenta admin */
 exports.ownershipRequired = function(req, res, next){
     var objQuizOwner = req.quiz.UserId;
     var logUser = req.session.user.id;
@@ -14,7 +15,7 @@ exports.ownershipRequired = function(req, res, next){
     }
 };
 
-// Autoload :id - factoriza el código si ruta incluye :quizId
+/* Autoload :id - factoriza el código si ruta incluye :quizId */
 exports.load = function(req, res, next, quizId) {
     models.Quiz.find( {
         where: {
@@ -24,7 +25,7 @@ exports.load = function(req, res, next, quizId) {
           model: models.Comment
         }]
       }).then(function(quiz) {
-        if (quiz)
+        if(quiz)
         {
             req.quiz = quiz;
             next();
@@ -38,56 +39,130 @@ exports.load = function(req, res, next, quizId) {
     });
 };
 
-/* GET /quizes */
-/* GET /users/:userId/quizes */
+/* GET /quizes
+GET /users/:userId/quizes */
 exports.index = function(req, res, next) {
   var options = {};
   if(req.user) {
-    options.where = {
-        UserId: req.user.id
-    }
+    options.where = { UserId: req.user.id }
   }
-  var cadena = "";
-    if (req.query.search === undefined) {
-        models.Quiz.findAll(options).then(function(quizes) {
-            res.render('quizes/index', {
-                quizes: quizes,
-                errors: []
+  var search = "";
+  var mark     = [];
+  var favourites = [];
+  if(req.session.user) {
+    models.Favourite.findAll( {
+        where: { UserId: Number(req.session.user.id) }
+    }).then(function(fav) {
+        favourites = fav;
+        if(req.query.search === undefined) {
+            models.Quiz.findAll(options).then(function(quizes) {
+                for(j in quizes) {
+                    mark[j] = 'unchecked';
+                    for(k in favourites) {
+                      if(favourites[k].QuizId === quizes[j].id) {
+                          mark[j] = 'checked';
+                      }
+                    }
+                }
+                res.render('quizes/index', {
+                    quizes: quizes,
+                    mark: mark,
+                    errors: []
+                });
+            }).catch(function(error) {
+                next(error);
             });
-        }).catch(function(error) {
-            next(error);
-        });
+          }
+          else {
+              search = '%' + req.query.search + '%';
+              search = search.replace(/\s/g, '%');
+              models.Quiz.findAll( {
+                  where: ["pregunta like ?", search],
+                  order: ['pregunta']
+              }).then(function(quizes) {
+                  for(j in quizes) {
+                    mark[j] = 'unchecked';
+                    for(k in favourites) {
+                      if(favourites[k].QuizId === quizes[j].id) {
+                        mark[j] = 'checked';
+                      }
+                    }
+                  }
+                  res.render('quizes/index', {
+                    quizes: quizes,
+                    mark: mark,
+                    errors: []
+                  });
+              }).catch(function(error) {
+                    next(error);
+              });
+          }
+      });
     }
     else {
-        cadena = '%' + req.query.search + '%';
-        cadena = cadena.replace(/\s/g, '%');
+      if(req.query.search === undefined) {
+          models.Quiz.findAll(options).then(function(quizes) {
+            res.render('quizes/index', {
+                quizes: quizes,
+                mark: mark,
+                errors: []
+            });
+          }).catch(function(error) {
+                next(error);
+          });
+      }
+      else {
+        search = '%' + req.query.search + '%';
+        search = search.replace(/\s/g, '%');
         models.Quiz.findAll( {
-            where: ['pregunta like ?', cadena],
+            where: ["pregunta like ?", search],
             order: ['pregunta']
         }).then(function(quizes) {
             res.render('quizes/index', {
-                quizes: quizes,
-                errors: []
+                  quizes: quizes,
+                  mark: mark,
+                  errors: []
             });
         }).catch(function(error) {
-                next(error);
-            });
-        }
+              next(error);
+        });
+      }
+    }
 };
 
-/* GET /quizes/:id */
+/* GET /quizes/:quizId */
 exports.show = function(req, res) {
-  res.render('quizes/show', {
-        quiz: req.quiz,  // req.quiz: instancia de quiz cargada con autoload
+  var mark = 'unchecked';
+  if(req.session.user) {
+    models.Favourite.find( {
+      where: {
+          UserId: Number(req.session.user.id),
+          QuizId: Number(req.quiz.id)
+      }
+    }).then(function(fav) {
+        if(fav) {
+            mark = 'checked';
+        }
+        res.render('quizes/show', {
+            quiz: req.quiz,
+            mark: mark,
+            errors: []
+        });
+    });
+  }
+  else {
+    res.render('quizes/show', {
+        quiz: req.quiz,
+        mark: mark,
         errors: []
-  });
+    });
+  }
 };
 
-/* GET /quizes/:id/answer */
+/* GET /quizes/:quizId/answer */
 exports.answer = function(req, res) {
   var resultado = 'Incorrecto';
-  if (req.query.respuesta === req.quiz.respuesta)
-  {
+  if (req.query.respuesta === req.quiz.respuesta) {
       resultado = 'Correcto';
   }
   res.render('quizes/answer', {
@@ -98,10 +173,11 @@ exports.answer = function(req, res) {
 };
 
 /* GET /quizes/new */
-exports.new = function(req, res) { //crea objeto quiz
+exports.new = function(req, res) {
+    //crea objeto quiz
     var quiz = models.Quiz.build( {
-        pregunta : "Pregunta",
-        respuesta: "Respuesta"
+        pregunta : 'Pregunta',
+        respuesta: 'Respuesta'
     });
     res.render('quizes/new', {
         quiz: quiz,
@@ -117,21 +193,19 @@ exports.create = function(req, res, next) {
     }
     var quiz = models.Quiz.build(req.body.quiz);
     quiz.validate().then(function(err) {
-          if (err)
-          {
+          if (err) {
               res.render('quizes/new', {
                   quiz  : quiz,
                   errors: err.errors
               });
           }
-          else
-          { // guarda en DB los campos "pregunta", "respuesta", "UserId" e "image" de quiz
+          else { // guardar en DB los campos "pregunta", "respuesta", "UserId" e "image" de quiz
               quiz.save( {
                   fields: [
-                    "pregunta",
-                    "respuesta",
-                    "UserId",
-                    "image"
+                    'pregunta',
+                    'respuesta',
+                    'UserId',
+                    'image'
                   ]
               }).then(function() {
                   // redirección HTTP a lista de preguntas
@@ -143,7 +217,7 @@ exports.create = function(req, res, next) {
     });
 };
 
-/* GET /quizes/:id/edit */
+/* GET /quizes/:quizId/edit */
 exports.edit = function(req, res) {
     res.render('quizes/edit', {
         quiz: req.quiz,
@@ -151,7 +225,7 @@ exports.edit = function(req, res) {
     });
 };
 
-/* PUT /quizes/:id */
+/* PUT /quizes/:quizId */
 exports.update = function(req, res, next) {
     if(req.files.image) {
         req.quiz.image = req.files.image.name;
@@ -167,12 +241,12 @@ exports.update = function(req, res, next) {
             });
         }
         else
-        { // guarda en DB los campos "pregunta", "respuesta" y "image" de req.quiz
+        { // guardar en DB los campos "pregunta", "respuesta" y "image" de req.quiz
             req.quiz.save( {
                 fields: [
-                  "pregunta",
-                  "respuesta",
-                  "image"
+                  'pregunta',
+                  'respuesta',
+                  'image'
                 ]
             }).then( function() {
                 // redirección HTTP a lista de preguntas
@@ -184,7 +258,7 @@ exports.update = function(req, res, next) {
     });
 };
 
-/* DELETE /quizes/:id */
+/* DELETE /quizes/:quizId */
 exports.destroy = function(req, res, next) {
     req.quiz.destroy().then(function() {
         res.redirect('/quizes');

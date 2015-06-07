@@ -1,7 +1,8 @@
+/* Importar el modelo */
 var models = require('../models/models.js');
 
-// MW que permite acciones solamente si el quiz al que pertenece el
-// comentario objeto pertenece al usuario logeado o si es cuenta admin
+/* MW que permite acciones solamente si el quiz al que pertenece el
+comentario objeto pertenece al usuario logeado o si es cuenta admin */
 exports.ownershipRequired = function(req, res, next){
     models.Quiz.find({
             where: {
@@ -32,13 +33,10 @@ exports.load = function(req, res, next, commentId) {
             id: Number(commentId)
         }
     }).then(function(comment) {
-        if(comment)
-        {
+        if(comment) {
             req.comment = comment;
             next();
-        }
-        else
-        {
+        } else {
             next(new Error('No existe commentId = ' + commentId))
         }
     }).catch(function(error) {

@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title> Preguntas </title>
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
   <link rel='stylesheet'
         type='text/css'
         href='/stylesheets/style.css' />
@@ -27,7 +28,12 @@
       <%
       }else{
       %>
-        <span class="right">Hola <%=session.user.username%>! - <a href="/user/<%=session.user.id%>/edit">Settings</a> - <a href="/logout">Logout</a></span>
+        <span class="right">
+          <img class="user_img" src="/media/<%= session.user.image %>" />
+          <a href="/user/<%= session.user.id %>/profile"> <%= session.user.username %></a>
+          <a href="/user/<%=session.user.id%>/edit">Settings</a>
+          <a href="/logout">Logout</a>
+        </span>
       <%
       }
       %>
@@ -40,6 +46,8 @@
     <span><a href="/quizes">Preguntas</a></span>
     <% if(session.user) { %>
       <span><a href="/user/<%= session.user.id %>/quizes">Mis Preguntas</a></span>
+      <span><a href="/user/<%= session.user.id %>/favourites">Favoritos</a></span>
+      <span><a href="/users/">Mis amigos</a></span>
     <% } %>
     <span><a href="/quizes/statistics">Estadísticas</a></span>
     <span><a href="/author">Autores</a></span>
@@ -47,7 +55,7 @@
 
   <section class="main" id="s1">
       <% if (errors.length) { %>
-          <span id='ErrorMsgs'>
+          <span id="ErrorMsgs">
               Corregir errores:<br/>
               <% for (var i in errors) { %>
                   <span><%= errors[i].message %></span><br/>

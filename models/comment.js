@@ -1,4 +1,4 @@
-// Definicion del modelo de Quiz con validación
+/* Definicion del modelo Comment */
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define('Comment', {
         texto: {
@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         publicado: {
             type: DataTypes.BOOLEAN,
-            defaultValue: false            
+            defaultValue: false
         }
     });
 }

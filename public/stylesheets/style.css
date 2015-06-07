@@ -2,6 +2,7 @@
 *                    { margin: 0; padding: 0; }
 body                 { font: 16px Georgia, serif; }
 
+a 									 { text-decoration: none; }
 
 #page-wrap           { margin: 2% auto; color: white; }
 #page-wrap > .main   { border: 1px solid #999; padding: 1%;
@@ -12,8 +13,20 @@ header, nav, section { background: #eee; text-align: center;}
 footer               { background: #eee; text-align: center;}
 nav span             { margin: 0px 10px 0px 0px; width : 100%; display: inline-block;}
 
-#ErrorMsgs					 { color: #f61; font-size: smaler;}
+#ErrorMsgs					 { color: #f61; font-size: smaller;}
 
 .right							 { float: right;}
 
 .quiz_img						 { height: 150px; float : left; }
+
+.user_img						 { height: 40px; float : left; }
+
+.profile_img 				 { height: 150px; }
+
+.checked						 { background-repeat: no-repeat; width: 30px; height: 30px;
+    									 display: block; background-position: center center;
+    									 background-image: url("../images/star_yellow.png"); }
+
+.unchecked						 { background-repeat: no-repeat; width: 30px; height: 30px;
+    									 display: block; background-position: center center;
+    									 background-image: url("../images/star_grey.png"); }

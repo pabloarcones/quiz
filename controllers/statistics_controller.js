@@ -1,3 +1,4 @@
+/* Importar el modelo */
 var models = require('../models/models.js');
 
 /* GET /quizes/statistics */

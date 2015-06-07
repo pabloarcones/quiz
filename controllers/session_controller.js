@@ -1,8 +1,8 @@
-/* Middleware: Se requiere hacer login. */
+/*  MW que permite acciones únicamente si el usuario ha sido logueado */
 exports.loginRequired = function(req, res, next) {
     if (req.session.user)  {
         next();
-    } else{
+    } else {
         res.redirect('/login');
     }
 };
@@ -14,7 +14,6 @@ una url a la que redirigirme despues de hacer login) que me
 han puesto en la query (si no existe uso /). */
 /* GET /login -- Formulario de login */
 exports.new = function(req, res) {
-
     var errors = req.session.errors || {};
     req.session.errors = {};
     res.render('sessions/new', {
@@ -31,14 +30,13 @@ Si la autenticacion falla, me redirijo otra vez al formulario
 de login. Notar que el valor de redir lo arrastro siempre. */
 /* POST /login -- Crear la sesion si usuario se autentica */
 exports.create = function(req, res) {
-
     var login    = req.body.login;
     var password = req.body.password;
 
     var userController = require('./user_controller');
     userController.autenticar(login, password, function(error, user) {
-
-        if (error) {   // si hay error retornamos mensajes de error de sesión
+        // si hay error retornamos mensajes de error de sesión
+        if (error) {
             req.session.errors = [{
               "message": 'Se ha producido un error: ' + error
             }];
@@ -51,10 +49,11 @@ exports.create = function(req, res) {
         // Esto es lo que uso para saber si he hecho login o no.
         // La sesión se define por la existencia de: req.session.user
         req.session.user = {
-          id:user.id,
-          username:user.username,
-          isAdmin:user.isAdmin,
-          tiempo  :new Date().getTime()
+          id : user.id,
+          username : user.username,
+          isAdmin : user.isAdmin,
+          image : user.image,
+          tiempo : new Date().getTime()
         };
 
         // Redirección a path anterior a login
@@ -63,9 +62,9 @@ exports.create = function(req, res) {
 };
 
 /*Logout: Para salir de la session simplemente destruyo req.session.user */
-/* DELETE /logout -- Destruir sesion */
+/* GET /logout -- Destruir sesion */
 exports.destroy = function(req, res) {
-
+    // eliminar la sesion (req.session.user)
     delete req.session.user;
     // redirect a path anterior a login
     res.redirect(req.session.redir.toString());
