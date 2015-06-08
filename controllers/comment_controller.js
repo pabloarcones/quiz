@@ -23,7 +23,7 @@ exports.ownershipRequired = function(req, res, next){
                 }
             } else{next(new Error('No existe quizId=' + quizId))}
         }
-    ).catch(function(error){next(error)});
+    ).catch(function(error){next(error);});
 };
 
 /* Autoload :id */
@@ -40,7 +40,7 @@ exports.load = function(req, res, next, commentId) {
             next(new Error('No existe commentId = ' + commentId))
         }
     }).catch(function(error) {
-        next(error)
+        next(error);
     });
 };
 

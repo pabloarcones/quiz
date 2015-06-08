@@ -27,7 +27,7 @@ exports.load = function(req, res, next, userId) {
         next();
       } else{next(new Error('No existe userId=' + userId))}
     }
-  ).catch(function(error){next(error)});
+  ).catch(function(error){next(error);});
 };
 
 /* Autenticar un usuario. Busca el usuario con el login dado en la base de
@@ -44,7 +44,7 @@ exports.autenticar = function(login, password, callback) {
               	callback(null, user);
           } else { callback(new Error('Password erróneo.')); }
         } else { callback(new Error('No existe user=' + login))}
-  }).catch(function(error){callback(error)});
+  }).catch(function(error){callback(error);});
 };
 
 /* GET /user */
@@ -73,7 +73,7 @@ exports.create = function(req, res) {
                     res.redirect('/');
                 });
           }
-    }).catch(function(error){next(error)});
+    }).catch(function(error){next(error);});
 };
 
 /* GET /user/:userId/edit */
@@ -97,7 +97,7 @@ exports.update = function(req, res, next) {
           fields: ['username', 'password', 'image']
         }).then( function(){ res.redirect('/');});   // Redirección HTTP a home page
       }
-  }).catch(function(error){next(error)});
+  }).catch(function(error){next(error);});
 };
 
 /* DELETE /user/:userId */
@@ -106,7 +106,7 @@ exports.destroy = function(req, res) {
     // borra la sesión y redirige HTTP a home page
     delete req.session.user;
     res.redirect('/');
-  }).catch(function(error){next(error)});
+  }).catch(function(error){next(error);});
  };
 
 /* GET /users */
